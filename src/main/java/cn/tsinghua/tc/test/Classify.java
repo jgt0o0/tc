@@ -87,7 +87,7 @@ public class Classify {
             for (Map.Entry<String, Integer> entry : testTermMap.entrySet()) {
                 int testVal = entry.getValue().intValue();
                 int termCount = LabelCache.getInstance().getCountInLabelByTerm(label, entry.getKey());
-                BigDecimal tmpProb = (new BigDecimal(termCount + 1)).divide(new BigDecimal(LabelCache.getInstance().getTotalWordCount()).add(new BigDecimal(LabelCache.getInstance().getWordCountInLabel(label))), 10, BigDecimal.ROUND_CEILING);
+                BigDecimal tmpProb = (new BigDecimal(termCount + 1)).divide(new BigDecimal(LabelCache.getInstance().getWordCountWithoutRepeat()).add(new BigDecimal(LabelCache.getInstance().getWordCountInLabel(label))), 10, BigDecimal.ROUND_CEILING);
                 p = p.multiply(tmpProb);
                 for (int i = 1; i < testVal; i++) {
                     p = p.multiply(tmpProb);

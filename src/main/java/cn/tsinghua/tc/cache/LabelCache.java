@@ -1,9 +1,7 @@
 package cn.tsinghua.tc.cache;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.xml.bind.ValidationEvent;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -24,6 +22,8 @@ public class LabelCache {
 
     //记录总词数
     private volatile Integer totalWordCount = 0;
+
+    private volatile int totalWordCountWithoutRepeat = -1;
 
     private static final LabelCache _INSTANCE = new LabelCache();
 
@@ -115,6 +115,17 @@ public class LabelCache {
         System.out.println(termCountOnLabel);
     }
 
+    public int getWordCountWithoutRepeat() {
+        if (totalWordCountWithoutRepeat < 0) {
+            Set<String> tmpResult = new HashSet<String>();
+            for (Map.Entry<String, Map<String, Integer>> entry : termCountOnLabel.entrySet()) {
+                tmpResult.addAll(entry.getValue().keySet());
+            }
+            totalWordCountWithoutRepeat = tmpResult.size();
+        }
+        return totalWordCountWithoutRepeat;
+    }
+
     public void addWordTotalCount(int count) {
         synchronized (totalWordCount) {
             totalWordCount += count;
@@ -130,15 +141,15 @@ public class LabelCache {
         return labelTermCount.get(label);
     }
 
-    public Map<String,Integer> getLabelFileCount() {
+    public Map<String, Integer> getLabelFileCount() {
         return labelFileCount;
     }
 
-    public  Map<String, Map<String, Integer>> getTermCountOnLabel() {
+    public Map<String, Map<String, Integer>> getTermCountOnLabel() {
         return termCountOnLabel;
     }
 
-    public Map<String,Integer> getLabelTermCount() {
+    public Map<String, Integer> getLabelTermCount() {
         return labelTermCount;
     }
 
