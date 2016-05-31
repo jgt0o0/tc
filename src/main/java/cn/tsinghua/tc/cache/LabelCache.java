@@ -88,6 +88,17 @@ public class LabelCache {
         }
     }
 
+    public int getCountInLabelByTerm(String label, String term) {
+        int result = 0;
+        if (termCountOnLabel.containsKey(label)) {
+            Integer value = termCountOnLabel.get(label).get(term);
+            if (value != null) {
+                result = value.intValue();
+            }
+        }
+        return result;
+    }
+
     public void addLableWordCount(String label, int count) {
         synchronized (labelTermCount) {
             if (labelTermCount.containsKey(label)) {
