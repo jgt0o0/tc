@@ -3,6 +3,7 @@ package cn.tsinghua.tc.test;
 import cn.tsinghua.tc.cache.LabelCache;
 import cn.tsinghua.tc.cache.StopWordCache;
 import cn.tsinghua.tc.util.PorterStemmer;
+import cn.tsinghua.tc.util.PropertyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +18,19 @@ import java.util.Map;
 public class Classify {
     private static final Logger LOGGER = LoggerFactory.getLogger(Classify.class);
 
-    public void classify(String file) {
+    public Map<String, String> start() {
+        Map<String, String> result = new HashMap<String, String>();
+        Classify classify = new Classify();
+        File dir = new File(PropertyUtil.getInstance().TEST_DOC_DIR);
+        File[] files = dir.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            String cat = classify.classify(files[i].getAbsolutePath());
+            result.put(files[i].getName(), cat);
+        }
+        return result;
+    }
+
+    private String classify(String file) {
         Map<String, Integer> termCount = new HashMap<String, Integer>();
         BufferedReader bufferedReader = null;
         try {
@@ -39,7 +52,8 @@ public class Classify {
         }
 
         String result = this.calProb(termCount);
-        LOGGER.info("[{}]属于分类:{}", file,result);
+        LOGGER.info("[{}]属于分类:{}", file, result);
+        return result;
     }
 
     private void handleLine(String line, Map<String, Integer> termCount) {

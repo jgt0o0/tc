@@ -1,6 +1,7 @@
 package cn.tsinghua.tc;
 
 import cn.tsinghua.tc.cache.LabelCache;
+import cn.tsinghua.tc.test.AccuracyCompute;
 import cn.tsinghua.tc.test.Classify;
 import cn.tsinghua.tc.train.StopWordsReader;
 import cn.tsinghua.tc.train.TrainDocReader;
@@ -11,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by ji on 16-5-25.
@@ -43,13 +46,16 @@ public class StartUp {
                 writeTrainDataToFile.write();
                 LOGGER.info("训练结果数据写入文件完成");
 
+                LOGGER.info("开始测试");
                 Classify classify = new Classify();
-                File dir = new File(PropertyUtil.getInstance().TRAIN_DIR + "/train/");
-                File[] files = dir.listFiles();
-                for (int i = 0; i < files.length; i++) {
-                    classify.classify(files[i].getAbsolutePath());
+                Map<String, String> result = classify.start();
+                LOGGER.info("测试完成");
 
-                }
+                LOGGER.info("开始统计准确率");
+                AccuracyCompute accuracyCompute = new AccuracyCompute();
+                Double accuracy = accuracyCompute.compute(result);
+                LOGGER.info("准确率统计完成");
+                LOGGER.warn("准确率为{}", accuracy);
 
                 LabelCache.getInstance().getL();
             } else if (type.equals("test")) {

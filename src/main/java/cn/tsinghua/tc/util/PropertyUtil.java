@@ -31,6 +31,16 @@ public class PropertyUtil {
     //每个类标下的总词数
     public String LABEL_WORD_COUNT;
 
+
+    //测试目录
+    public String TEST_DIR;
+    //测试文件目录
+    public String TEST_DOC_DIR;
+    //测试文件类标数据文件
+    public String TEST_LABEL_FILE;
+    //测试结果类标输出文件
+    public String TEST_LABEL_OUT_FILE;
+
     private PropertyUtil() {
         Properties properties = new Properties();
         InputStream inputStream = null;
@@ -51,6 +61,14 @@ public class PropertyUtil {
             LABEL_WORD_PER_COUNT = TRAIN_OUT_DIR + "/" + properties.getProperty("train.out.label.wordCount.per.file");
 
             LABEL_WORD_COUNT = TRAIN_OUT_DIR + "/" + properties.getProperty("train.out.label.wordCount.file");
+
+            TEST_DIR = properties.getProperty("test.dir");
+
+            TEST_DOC_DIR = TEST_DIR + "/" + properties.getProperty("test.doc.dir");
+
+            TEST_LABEL_FILE = TEST_DIR + "/" + properties.getProperty("test.doc.label.file");
+
+            TEST_LABEL_OUT_FILE = TEST_DIR + "/" + properties.getProperty("test.out.doc.label.file");
         } catch (Exception e) {
             LOGGER.error("读取配置异常", e);
         } finally {
