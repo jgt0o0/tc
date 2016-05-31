@@ -101,7 +101,7 @@ public class TrainDocReader {
                 PorterStemmer porterStemmer = new PorterStemmer();
                 for (int i = 0; i < res.length; i++) {
                     if (("".equals(res[i].trim())) || StopWordCache.contains(res[i].toLowerCase())) {
-                        LOGGER.info("跳过单词:{}", res[i]);
+//                        LOGGER.info("跳过单词:{}", res[i]);
                     } else {
                         wordCount++;
                         char[] charArray = res[i].toLowerCase().toCharArray();

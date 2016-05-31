@@ -63,6 +63,7 @@ public class StartUp {
             } else {
 
             }
+            System.exit(0);
         } catch (Exception e) {
             LOGGER.error("处理异常,系统退出", e);
             System.exit(-1);
