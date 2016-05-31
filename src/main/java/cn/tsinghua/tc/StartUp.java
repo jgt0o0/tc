@@ -3,6 +3,7 @@ package cn.tsinghua.tc;
 import cn.tsinghua.tc.cache.LabelCache;
 import cn.tsinghua.tc.test.AccuracyCompute;
 import cn.tsinghua.tc.test.Classify;
+import cn.tsinghua.tc.test.WriteResultToFile;
 import cn.tsinghua.tc.train.StopWordsReader;
 import cn.tsinghua.tc.train.TrainDocReader;
 import cn.tsinghua.tc.train.TrainLabelReader;
@@ -50,6 +51,11 @@ public class StartUp {
                 Classify classify = new Classify();
                 Map<String, String> result = classify.start();
                 LOGGER.info("测试完成");
+
+                LOGGER.info("分类结果写入文件");
+                WriteResultToFile writeResultToFile = new WriteResultToFile();
+                writeResultToFile.write(result);
+                LOGGER.info("分类结果写入文件完成");
 
                 LOGGER.info("开始统计准确率");
                 AccuracyCompute accuracyCompute = new AccuracyCompute();
