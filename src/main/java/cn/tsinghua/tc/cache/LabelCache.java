@@ -1,6 +1,5 @@
 package cn.tsinghua.tc.cache;
 
-import javax.xml.bind.ValidationEvent;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -34,6 +33,10 @@ public class LabelCache {
         return _INSTANCE;
     }
 
+    public Set<String> getAllLabels() {
+        return labelFileCount.keySet();
+    }
+
     /**
      * 将训练数据文件和对应的类标存储到本地
      *
@@ -47,6 +50,7 @@ public class LabelCache {
             fileCount = 0;
         }
         labelFileCount.put(label, fileCount.intValue() + 1);
+        FileFrequencyCache.getInstance().addFileInLabel(label, file);
     }
 
     public void removeFile(String fileName) {
@@ -99,6 +103,14 @@ public class LabelCache {
         return result;
     }
 
+    public ArrayList<String> getLableTerms(String label) {
+        if (termCountOnLabel.containsKey(label)) {
+            return new ArrayList<String>(termCountOnLabel.get(label).keySet());
+        } else {
+            return null;
+        }
+    }
+
     public void addLableWordCount(String label, int count) {
         synchronized (labelTermCount) {
             if (labelTermCount.containsKey(label)) {
@@ -129,6 +141,15 @@ public class LabelCache {
     public void addWordTotalCount(int count) {
         synchronized (totalWordCount) {
             totalWordCount += count;
+        }
+    }
+
+    public void minusTermCount(String label, int count) {
+        Integer c = labelTermCount.get(label);
+        if (c != null) {
+            c = c - count;
+            labelTermCount.put(label, c);
+            totalWordCount -= count;
         }
     }
 

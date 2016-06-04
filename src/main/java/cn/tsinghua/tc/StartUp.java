@@ -1,19 +1,15 @@
 package cn.tsinghua.tc;
 
+import cn.tsinghua.tc.cache.FileFrequencyCache;
 import cn.tsinghua.tc.cache.LabelCache;
 import cn.tsinghua.tc.test.AccuracyCompute;
 import cn.tsinghua.tc.test.Classify;
 import cn.tsinghua.tc.test.WriteResultToFile;
-import cn.tsinghua.tc.train.StopWordsReader;
-import cn.tsinghua.tc.train.TrainDocReader;
-import cn.tsinghua.tc.train.TrainLabelReader;
-import cn.tsinghua.tc.train.WriteTrainDataToFile;
+import cn.tsinghua.tc.train.*;
 import cn.tsinghua.tc.util.PropertyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -47,9 +43,18 @@ public class StartUp {
                 writeTrainDataToFile.write();
                 LOGGER.info("训练结果数据写入文件完成");
 
+
+                InformationGain informationGain = new InformationGain();
+                informationGain.compute();
+
+                informationGain.filterData();
+
                 LOGGER.info("开始测试");
                 Classify classify = new Classify();
+                long start = System.currentTimeMillis();
                 Map<String, String> result = classify.start();
+                long end = System.currentTimeMillis();
+                LOGGER.info("耗时:{}",end-start);
                 LOGGER.info("测试完成");
 
                 LOGGER.info("分类结果写入文件");
@@ -63,7 +68,9 @@ public class StartUp {
                 LOGGER.info("准确率统计完成");
                 LOGGER.warn("准确率为{}", accuracy);
 
+
                 LabelCache.getInstance().getL();
+                FileFrequencyCache.getInstance().getFilesContainsTerm("a");
             } else if (type.equals("test")) {
 
             } else {

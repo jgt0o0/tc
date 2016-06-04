@@ -2,6 +2,7 @@ package cn.tsinghua.tc.test;
 
 import cn.tsinghua.tc.cache.LabelCache;
 import cn.tsinghua.tc.cache.StopWordCache;
+import cn.tsinghua.tc.train.InformationGain;
 import cn.tsinghua.tc.util.PorterStemmer;
 import cn.tsinghua.tc.util.PropertyUtil;
 import org.slf4j.Logger;
@@ -52,7 +53,7 @@ public class Classify {
         }
 
         String result = this.calProb(termCount);
-        LOGGER.info("[{}]属于分类:{}", file, result);
+//        LOGGER.info("[{}]属于分类:{}", file, result);
         return result;
     }
 
@@ -86,6 +87,9 @@ public class Classify {
             BigDecimal p = new BigDecimal(1);
             for (Map.Entry<String, Integer> entry : testTermMap.entrySet()) {
                 int testVal = entry.getValue().intValue();
+                if (!InformationGain.termSet.contains(entry.getKey())) {
+                    continue;
+                }
                 int termCount = LabelCache.getInstance().getCountInLabelByTerm(label, entry.getKey());
                 BigDecimal tmpProb = (new BigDecimal(termCount + 1)).divide(new BigDecimal(LabelCache.getInstance().getWordCountWithoutRepeat()).add(new BigDecimal(LabelCache.getInstance().getWordCountInLabel(label))), 10, BigDecimal.ROUND_CEILING);
                 p = p.multiply(tmpProb);
