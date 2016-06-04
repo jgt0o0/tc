@@ -1,5 +1,6 @@
 package cn.tsinghua.tc.feature;
 
+import cn.tsinghua.tc.cache.DocCache;
 import cn.tsinghua.tc.cache.LabelCache;
 import cn.tsinghua.tc.util.FeatureUtil;
 import cn.tsinghua.tc.util.SelectKth;
@@ -21,25 +22,22 @@ public class MutualInformationFeatureSelector {
     private double docCount;
 
     //map which stores the counts of feature-class combinations. class feature
-    //Map<List<Object>, Integer> featureClassCounts;
-
-    // stores the counts of feature in class.
-    private Map<String,Map<String, Integer>> classFeatureCounts;
+    private Map<List<String>, Integer> featureClassCounts;
 
     private Integer maxFeatures;
 
-    public MutualInformationFeatureSelector(Map<String, Integer> featureCounts, Integer maxFeatures) {
+    public MutualInformationFeatureSelector(Integer maxFeatures) {
         // init as original;
+        this.maxFeatures = maxFeatures;
         this.selectedFeatures = Arrays.asList(featureCounts.keySet().toArray(new String[featureCounts.keySet().size()]));
-        this.featureCounts = featureCounts;
+        this.featureCounts = DocCache.getInstance().getFeatureDocCounts();
         this.classCounts = LabelCache.getInstance().getLabelFileCount();
-        this.classFeatureCounts = LabelCache.getInstance().getTermCountOnLabel();
         int totalDocs = 0;
         for(Map.Entry<String,Integer> docFile:LabelCache.getInstance().getLabelFileCount().entrySet()){
             totalDocs += docFile.getValue();
         }
         this.docCount = (double) totalDocs;
-        this.maxFeatures = maxFeatures;
+        this.featureClassCounts = DocCache.getInstance().getFeatureClassCounts();
 
         filterFeatures();
     }
@@ -99,8 +97,8 @@ public class MutualInformationFeatureSelector {
 
                 double N_1 = classCount.getValue();
                 double N_0 = N - N_1;
-                //Integer featureClassC = featureClassCounts.get(Arrays.<Object>asList(feature, theClass));
-                Integer featureClassC = classFeatureCounts.get(theClass).get(feature);
+                Integer featureClassC = featureClassCounts.get(Arrays.<Object>asList(feature, theClass));
+
                 double N11 = (featureClassC!=null)?featureClassC.doubleValue():0.0; //N11 is the number of records that have the feature and belong on the specific class
 
                 double N01 = N_1 - N11; //N01 is the total number of records that do not have the particular feature BUT they belong to the specific class

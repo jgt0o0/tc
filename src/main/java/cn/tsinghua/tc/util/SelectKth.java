@@ -32,7 +32,7 @@ public class SelectKth {
      * @param k
      * @return 
      */
-    public static Double largest(Iterator<Double> elements, int k) {
+    public static Double largest(final Iterator<Double> elements, int k) {
         Iterator<Double> oppositeElements = new Iterator<Double>() {
             /** {@inheritDoc} */
             @Override
@@ -67,7 +67,7 @@ public class SelectKth {
             return null;
         } 
         else if (k >= Integer.MAX_VALUE / 2) {
-            List <Double> list = new ArrayList <> ();
+            List <Double> list = new ArrayList <Double> ();
             while (elements.hasNext()) {
                 list.add(elements.next());
             }
