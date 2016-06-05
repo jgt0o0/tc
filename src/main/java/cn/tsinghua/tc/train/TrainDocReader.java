@@ -1,5 +1,6 @@
 package cn.tsinghua.tc.train;
 
+import cn.tsinghua.tc.cache.DocCache;
 import cn.tsinghua.tc.cache.LabelCache;
 import cn.tsinghua.tc.cache.StopWordCache;
 import cn.tsinghua.tc.util.PorterStemmer;
@@ -8,7 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -74,13 +77,24 @@ public class TrainDocReader {
             try {
                 bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
                 String line;
+                Set<String> wordSet = new HashSet<String>();
                 while ((line = bufferedReader.readLine()) != null) {
-                    this.handleLine(line, label);
+                    this.handleLine(line, label,wordSet);
                 }
                 //记录每个类标中的词总数
                 LabelCache.getInstance().addLableWordCount(label, wordCount);
                 //记录总词数
                 LabelCache.getInstance().addWordTotalCount(wordCount);
+
+
+                for(String word:wordSet){
+                    // 记录词-类标 pair 的文档数。
+                    DocCache.getInstance().addFeatureClassCount(word,label);
+                    // 记录词的文档数。
+                    DocCache.getInstance().addFeatureDocCount(word);
+                }
+
+
             } catch (Exception e) {
                 LOGGER.error("读取文件异常:{}", file.getAbsolutePath(), e);
             } finally {
@@ -95,7 +109,7 @@ public class TrainDocReader {
             }
         }
 
-        private void handleLine(String line, String label) {
+        private void handleLine(String line, String label, Set<String> wordSet) {
             String res[] = line.split("[^a-zA-Z]");
             if (res.length > 0) {
                 PorterStemmer porterStemmer = new PorterStemmer();
@@ -110,6 +124,7 @@ public class TrainDocReader {
                         String str = porterStemmer.toString();
                         //记录这个词在类标中的出现次数
                         LabelCache.getInstance().addTermCountToLabel(label, str);
+                        wordSet.add(str);
                     }
                 }
             }

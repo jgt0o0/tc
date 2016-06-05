@@ -1,6 +1,8 @@
 package cn.tsinghua.tc;
 
+import cn.tsinghua.tc.cache.DocCache;
 import cn.tsinghua.tc.cache.LabelCache;
+import cn.tsinghua.tc.feature.MutualInformationFeatureSelector;
 import cn.tsinghua.tc.test.AccuracyCompute;
 import cn.tsinghua.tc.test.Classify;
 import cn.tsinghua.tc.test.WriteResultToFile;
@@ -14,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,6 +42,17 @@ public class StartUp {
                 //3.读取train文件数据
                 TrainDocReader docReader = new TrainDocReader();
                 docReader.readDoc();
+
+                //4. 初始化Mutual Information feature selector
+                Integer maxFeature=20000; // config
+                MutualInformationFeatureSelector mIFeatureSelector = new MutualInformationFeatureSelector(maxFeature);
+                mIFeatureSelector.filterFeatures();
+                List<String> selFeatures = mIFeatureSelector.getSelectedFeatures();
+                for(String feature : selFeatures){
+                    LOGGER.info(feature);
+                }
+                LOGGER.info("总单词数：" + DocCache.getInstance().getFeatureDocCounts().keySet().size());
+                LOGGER.info("选出的特征总数：" + selFeatures.size());
 
                 LOGGER.info("训练数据文件读取完成");
 
