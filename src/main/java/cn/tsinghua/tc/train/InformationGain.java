@@ -1,6 +1,7 @@
 package cn.tsinghua.tc.train;
 
 import cn.tsinghua.tc.cache.FileFrequencyCache;
+import cn.tsinghua.tc.cache.FutureCache;
 import cn.tsinghua.tc.cache.LabelCache;
 
 import java.util.*;
@@ -10,7 +11,6 @@ import java.util.*;
  * Created by ji on 16-6-4.
  */
 public class InformationGain {
-    public static Set<String> termSet = new HashSet<String>();
 
     public static Map<String, Double> gain = new HashMap<String, Double>();
 
@@ -92,7 +92,7 @@ public class InformationGain {
                     i++;
                     if (i <= treeMap.size() * 1) {
                         resultMap.put(entry.getKey(), entry.getValue());
-                        termSet.add(entry.getKey());
+                        FutureCache.addFuture(entry.getKey());
                     }
                 }
             }

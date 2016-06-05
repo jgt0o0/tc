@@ -1,5 +1,6 @@
 package cn.tsinghua.tc.test;
 
+import cn.tsinghua.tc.cache.FutureCache;
 import cn.tsinghua.tc.cache.LabelCache;
 import cn.tsinghua.tc.cache.StopWordCache;
 import cn.tsinghua.tc.train.InformationGain;
@@ -87,7 +88,7 @@ public class Classify {
             BigDecimal p = new BigDecimal(1);
             for (Map.Entry<String, Integer> entry : testTermMap.entrySet()) {
                 int testVal = entry.getValue().intValue();
-                if (!InformationGain.termSet.contains(entry.getKey())) {
+                if (!FutureCache.getFutureCache().contains(entry.getKey())) {
                     continue;
                 }
                 int termCount = LabelCache.getInstance().getCountInLabelByTerm(label, entry.getKey());

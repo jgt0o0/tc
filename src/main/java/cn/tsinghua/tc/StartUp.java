@@ -38,23 +38,19 @@ public class StartUp {
 
                 LOGGER.info("训练数据文件读取完成");
 
+                optimize(1);
+
                 LOGGER.info("开始将训练结果数据写入文件");
                 WriteTrainDataToFile writeTrainDataToFile = new WriteTrainDataToFile();
                 writeTrainDataToFile.write();
                 LOGGER.info("训练结果数据写入文件完成");
-
-
-                InformationGain informationGain = new InformationGain();
-                informationGain.compute();
-
-                informationGain.filterData();
 
                 LOGGER.info("开始测试");
                 Classify classify = new Classify();
                 long start = System.currentTimeMillis();
                 Map<String, String> result = classify.start();
                 long end = System.currentTimeMillis();
-                LOGGER.info("耗时:{}",end-start);
+                LOGGER.info("耗时:{}", end - start);
                 LOGGER.info("测试完成");
 
                 LOGGER.info("分类结果写入文件");
@@ -82,5 +78,15 @@ public class StartUp {
             System.exit(-1);
         }
 
+    }
+
+
+    private static void optimize(int type) {
+
+        if (type == 1) {
+            InformationGain informationGain = new InformationGain();
+            informationGain.compute();
+            informationGain.filterData();
+        }
     }
 }
