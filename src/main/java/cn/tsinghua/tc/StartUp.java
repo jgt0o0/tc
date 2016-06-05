@@ -18,6 +18,10 @@ import java.util.Map;
 public class StartUp {
     private static final Logger LOGGER = LoggerFactory.getLogger(StartUp.class);
 
+    private static final int INFORMATION_GAIN_TYPE = 1;
+
+    private static final int CHI_SQUARE=2;
+
     public static void main(String[] arg) {
         try {
             arg = new String[]{"train"};
@@ -38,7 +42,8 @@ public class StartUp {
 
                 LOGGER.info("训练数据文件读取完成");
 
-                optimize(1);
+                //特征提取
+                optimize(CHI_SQUARE);
 
                 LOGGER.info("开始将训练结果数据写入文件");
                 WriteTrainDataToFile writeTrainDataToFile = new WriteTrainDataToFile();
@@ -83,10 +88,14 @@ public class StartUp {
 
     private static void optimize(int type) {
 
-        if (type == 1) {
+        if (type == INFORMATION_GAIN_TYPE) {
             InformationGain informationGain = new InformationGain();
             informationGain.compute();
             informationGain.filterData();
+        }else if (type == CHI_SQUARE) {
+            ChiSquare chiSquare = new ChiSquare();
+            chiSquare.compute();
+            chiSquare.filterData();
         }
     }
 }
