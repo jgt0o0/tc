@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
 /**
+ * 训练数据集类标读取到内存
  * Created by ji on 16-5-25.
  */
 public class TrainLabelReader {

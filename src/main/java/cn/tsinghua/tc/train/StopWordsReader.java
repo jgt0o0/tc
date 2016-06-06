@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
 /**
+ * 读取stopWord到内存
  * Created by ji on 16-5-30.
  */
 public class StopWordsReader {

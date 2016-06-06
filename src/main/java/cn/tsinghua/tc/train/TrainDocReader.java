@@ -15,6 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * 训练数据集文章读取分析
  * Created by ji on 16-5-25.
  */
 public class TrainDocReader {

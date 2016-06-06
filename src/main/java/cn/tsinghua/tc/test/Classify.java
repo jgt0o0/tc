@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 对测试集文章分类过程
  * Created by ji on 16-5-30.
  */
 public class Classify {
@@ -32,6 +33,12 @@ public class Classify {
         return result;
     }
 
+    /**
+     * 分类文章
+     *
+     * @param file
+     * @return
+     */
     private String classify(String file) {
         Map<String, Integer> termCount = new HashMap<String, Integer>();
         BufferedReader bufferedReader = null;
@@ -54,19 +61,22 @@ public class Classify {
         }
 
         String result = this.calProb(termCount);
-//        LOGGER.info("[{}]属于分类:{}", file, result);
+        LOGGER.debug("[{}]属于分类:{}", file, result);
         return result;
     }
 
     private void handleLine(String line, Map<String, Integer> termCount) {
+        //将句子分成单词
         String res[] = line.split("[^a-zA-Z]");
         if (res.length > 0) {
             PorterStemmer porterStemmer = new PorterStemmer();
             for (int i = 0; i < res.length; i++) {
+                //stopWord过滤
                 if (("".equals(res[i].trim())) || StopWordCache.contains(res[i].toLowerCase())) {
 //                    LOGGER.info("跳过单词:{}", res[i]);
                 } else {
                     char[] charArray = res[i].toLowerCase().toCharArray();
+                    //stemmer算法对单词处理
                     porterStemmer.add(charArray, charArray.length);
                     porterStemmer.stem();
                     String str = porterStemmer.toString();
@@ -81,6 +91,11 @@ public class Classify {
         }
     }
 
+    /**
+     * 计算类标
+     * @param testTermMap
+     * @return
+     */
     private String calProb(Map<String, Integer> testTermMap) {
         BigDecimal maxP = null;
         String resultCate = null;
