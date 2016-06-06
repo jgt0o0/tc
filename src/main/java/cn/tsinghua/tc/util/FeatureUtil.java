@@ -1,6 +1,9 @@
 package cn.tsinghua.tc.util;
 
+import cn.tsinghua.tc.cache.LabelCache;
+
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,6 +38,23 @@ public class FeatureUtil {
                 if(entry.getValue()-minPermittedScore<=0.0) { //DO NOT COMPARE THEM DIRECTLY USE SUBTRACTION!
                     it.remove();
                     --numOfExtraFeatures;
+                }
+            }
+        }
+    }
+
+    public static void filterDataByFeatures(Map<String, Double> features){
+        Map<String, Map<String, Integer>> termCountLabel = LabelCache.getInstance().getTermCountOnLabel();
+        for (Map.Entry<String, Map<String, Integer>> entry : termCountLabel.entrySet()) {
+            String label = entry.getKey();
+            Map<String, Integer> termCountMap = entry.getValue();
+            Iterator<Map.Entry<String, Integer>> iterator = termCountMap.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<String, Integer> termCount = iterator.next();
+                if (!features.containsKey(termCount.getKey())) {
+                    Integer count = termCountMap.get(termCount.getKey());
+                    iterator.remove();
+                    LabelCache.getInstance().minusTermCount(label, count);
                 }
             }
         }

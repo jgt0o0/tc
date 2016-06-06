@@ -132,6 +132,15 @@ public class LabelCache {
         }
     }
 
+    public void minusTermCount(String label, int count) {
+        Integer c = labelTermCount.get(label);
+        if (c != null) {
+            c = c - count;
+            labelTermCount.put(label, c);
+            totalWordCount -= count;
+        }
+    }
+
 
     public Integer getTotalWordCount() {
         return totalWordCount;
@@ -156,4 +165,5 @@ public class LabelCache {
     public List<String> getLabels() {
         return new ArrayList<String>(labelFileCount.keySet());
     }
+
 }

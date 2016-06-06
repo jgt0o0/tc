@@ -10,6 +10,7 @@ import cn.tsinghua.tc.train.StopWordsReader;
 import cn.tsinghua.tc.train.TrainDocReader;
 import cn.tsinghua.tc.train.TrainLabelReader;
 import cn.tsinghua.tc.train.WriteTrainDataToFile;
+import cn.tsinghua.tc.util.FeatureUtil;
 import cn.tsinghua.tc.util.PropertyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,12 @@ import java.util.Map;
  */
 public class StartUp {
     private static final Logger LOGGER = LoggerFactory.getLogger(StartUp.class);
+
+    private static final int INFORMATION_GAIN_TYPE = 1;
+
+    private static final int CHI_SQUARE=2;
+
+    private static final int MUTUAL_INFORMATION = 3;
 
     public static void main(String[] arg) {
         try {
@@ -43,16 +50,9 @@ public class StartUp {
                 TrainDocReader docReader = new TrainDocReader();
                 docReader.readDoc();
 
-                //4. 初始化Mutual Information feature selector
-                Integer maxFeature=20000; // config
-                MutualInformationFeatureSelector mIFeatureSelector = new MutualInformationFeatureSelector(maxFeature);
-                mIFeatureSelector.filterFeatures();
-                List<String> selFeatures = mIFeatureSelector.getSelectedFeatures();
-                for(String feature : selFeatures){
-                    LOGGER.info(feature);
-                }
-                LOGGER.info("总单词数：" + DocCache.getInstance().getFeatureDocCounts().keySet().size());
-                LOGGER.info("选出的特征总数：" + selFeatures.size());
+                //4. optimize
+                //optimize(MUTUAL_INFORMATION);
+
 
                 LOGGER.info("训练数据文件读取完成");
 
@@ -89,5 +89,30 @@ public class StartUp {
             System.exit(-1);
         }
 
+    }
+
+    private static void optimize(int type) {
+
+        if (type == INFORMATION_GAIN_TYPE) {
+//            InformationGain informationGain = new InformationGain();
+//            informationGain.compute();
+//            informationGain.filterData();
+        }else if (type == CHI_SQUARE) {
+//            ChiSquare chiSquare = new ChiSquare();
+//            chiSquare.compute();
+//            chiSquare.filterData();
+        }else{
+            Integer maxFeature=34100; // config
+            MutualInformationFeatureSelector mIFeatureSelector = new MutualInformationFeatureSelector(maxFeature);
+            mIFeatureSelector.filterFeatures();
+            Map<String, Double> selFeatures = mIFeatureSelector.getSelectedFeatures();
+//                for(String feature : selFeatures){
+//                    LOGGER.info(feature);
+//                }
+            FeatureUtil.filterDataByFeatures(selFeatures);
+
+            LOGGER.info("总单词数：" + DocCache.getInstance().getFeatureDocCounts().keySet().size());
+            LOGGER.info("选出的特征总数：" + selFeatures.size());
+        }
     }
 }

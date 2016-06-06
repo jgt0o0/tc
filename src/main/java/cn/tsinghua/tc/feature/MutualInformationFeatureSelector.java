@@ -12,7 +12,7 @@ import java.util.*;
  */
 public class MutualInformationFeatureSelector {
 
-    private List<String> selectedFeatures;
+    private Map<String, Double> selectedFeatures;
     private Integer maxFeatures;
 
     public MutualInformationFeatureSelector(Integer maxFeatures) {
@@ -20,11 +20,11 @@ public class MutualInformationFeatureSelector {
         this.maxFeatures = maxFeatures;
     }
 
-    public List<String> getSelectedFeatures() {
+    public Map<String, Double> getSelectedFeatures() {
         return selectedFeatures;
     }
 
-    public void setSelectedFeatures(List<String> selectedFeatures) {
+    public void setSelectedFeatures(Map<String, Double> selectedFeatures) {
         this.selectedFeatures = selectedFeatures;
     }
 
@@ -108,7 +108,7 @@ public class MutualInformationFeatureSelector {
             FeatureUtil.selectHighScoreFeatures(featureScores, maxFeatures);
         }
 
-        this.selectedFeatures = Arrays.asList(featureScores.keySet().toArray(new String[featureScores.keySet().size()]));
+        this.selectedFeatures = featureScores;
 
     }
 
